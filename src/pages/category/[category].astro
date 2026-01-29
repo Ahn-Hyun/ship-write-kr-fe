@@ -1,0 +1,28 @@
+---
+import PageLayout from '../../layouts/Page.astro';
+import { getPublishedPosts, getPostsByCategory } from '../../lib/blog';
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+	const categories = new Set(posts.flatMap((post) => post.data.category ?? []));
+	return [...categories].map((category) => ({
+		params: { category },
+		props: { category },
+	}));
+}
+
+const posts = await getPublishedPosts();
+const { category } = Astro.props;
+const filtered = getPostsByCategory(posts, category);
+---
+
+<PageLayout title={`카테고리: ${category}`} description={`${category} 카테고리의 글`}>
+	<h1>카테고리: {category}</h1>
+	<ul>
+		{filtered.map((post) => (
+			<li>
+				<a class="title-clamp" href={`/blog/${post.id}/`}>{post.data.title}</a>
+			</li>
+		))}
+	</ul>
+</PageLayout>
