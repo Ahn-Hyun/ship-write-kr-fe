@@ -11,7 +11,7 @@ const categories = getAllCategories(posts);
 	<ul class="pill-list">
 		{categories.map((category) => (
 			<li>
-				<a class="pill" href={`/category/${category}`}>{category}</a>
+				<a class="pill" href={`/category/${encodeURIComponent(category)}`}>{category}</a>
 				<span>({getPostsByCategory(posts, category).length})</span>
 			</li>
 		))}

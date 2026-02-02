@@ -6,7 +6,7 @@ export async function getStaticPaths() {
 	const posts = await getPublishedPosts();
 	const categories = new Set(posts.flatMap((post) => post.data.category ?? []));
 	return [...categories].map((category) => ({
-		params: { category },
+		params: { category: encodeURIComponent(category) },
 		props: { category },
 	}));
 }
