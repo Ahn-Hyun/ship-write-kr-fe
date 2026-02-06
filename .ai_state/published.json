@@ -3,9 +3,11 @@
     "KR:agi",
     "KR:asml",
     "KR:claude cowork",
+    "KR:codex",
     "KR:grammy awards 2026",
     "KR:inter vs torino",
     "KR:kospi",
+    "KR:la 레이커스 대 필라데피아",
     "KR:nep vs can",
     "KR:notepad++",
     "KR:sk하이닉스 주가",
@@ -64,6 +66,8 @@
     "KR:한국장학재단",
     "KR:한미반도체",
     "KR:한온시스템",
+    "KR:한화솔루션",
+    "KR:한화솔루션 주가",
     "KR:한화오션",
     "US:auburn basketball",
     "US:brasileirao",
@@ -150,7 +154,11 @@
     "2026-02-05-vs-8-2-1",
     "2026-02-05-zimbabwe-vs-oman-2026-icc-t20",
     "2026-02-06-2009-2024",
+    "2026-02-06-2025-2026",
+    "2026-02-06-ampc",
     "2026-02-06-etf",
+    "2026-02-06-la",
+    "2026-02-06-openai-gpt-53-codex-it",
     "2026-02-06-rx-16"
   ]
 }
