@@ -17,9 +17,11 @@
     "KR:etf",
     "KR:fc온라인",
     "KR:fintech innovation",
+    "KR:gold price",
     "KR:grammy awards 2026",
     "KR:hull city vs chelsea",
     "KR:inter vs torino",
+    "KR:investing",
     "KR:ios 26.3",
     "KR:ireland vs oman",
     "KR:kospi",
@@ -49,6 +51,7 @@
     "KR:sri lanka vs oman",
     "KR:supreme",
     "KR:uae vs afghanistan",
+    "KR:wti",
     "KR:zimbabwe vs oman",
     "KR:zoom",
     "KR:бенфика – реал мадрид",
@@ -68,6 +71,7 @@
     "KR:군산대",
     "KR:그록",
     "KR:금값",
+    "KR:금시세",
     "KR:금오공대",
     "KR:김규리",
     "KR:김대희",
@@ -79,6 +83,7 @@
     "KR:나노바나나2",
     "KR:나띠",
     "KR:나무기술",
+    "KR:나스닥 선물",
     "KR:남보라",
     "KR:네이버",
     "KR:네이버 주가",
@@ -505,6 +510,11 @@
     "2026-03-01-topic-1772332765",
     "2026-03-01-topic-1772342896",
     "2026-03-01-topic-1772343440",
-    "2026-03-01-xai-ai"
+    "2026-03-01-xai-ai",
+    "2026-03-02-5200",
+    "2026-03-02-ai-2026-2",
+    "2026-03-02-ai-investing",
+    "2026-03-02-gold-price-5100-2026",
+    "2026-03-02-wti-8"
   ]
 }
