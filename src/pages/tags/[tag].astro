@@ -2,6 +2,7 @@
 import PageLayout from '../../layouts/Page.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { getAllTags, getPublishedPosts, getPostsByTag } from '../../lib/blog';
+import { buildResponsiveSources } from '../../lib/images';
 
 export async function getStaticPaths() {
 	const posts = await getPublishedPosts();
@@ -64,29 +65,48 @@ const filtered = getPostsByTag(posts, tag);
 		</button>
 	</div>
 	<ul class="post-grid">
-		{filtered.map((post) => (
-			<li>
-				<a href={`/blog/${post.id}/`}>
-					{post.data.heroImage && (
-						<img
-							src={post.data.heroImage.src}
-							alt={post.data.heroImage.alt ?? ''}
-							loading="lazy"
-							decoding="async"
-						/>
-					)}
-					<h4 class="title title-clamp">{post.data.title}</h4>
-					<p class="date">
-						<FormattedDate date={post.data.pubDate} />
-					</p>
-					<div class="meta">
-						{post.data.tags.map((tagItem) => (
-							<span>#{tagItem}</span>
-						))}
-					</div>
-				</a>
-			</li>
-		))}
+		{filtered.map((post) => {
+			const heroSources = post.data.heroImage
+				? buildResponsiveSources(post.data.heroImage.src, [360, 720])
+				: null;
+			return (
+				<li>
+					<a href={`/blog/${post.id}/`}>
+						{post.data.heroImage && (
+							<picture>
+								{heroSources?.webpSrcset && (
+									<source
+										type="image/webp"
+										srcset={heroSources.webpSrcset}
+										sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 360px"
+									/>
+								)}
+								<img
+									src={post.data.heroImage.src}
+									srcset={heroSources?.jpgSrcset || undefined}
+									sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 360px"
+									alt={post.data.heroImage.alt ?? ''}
+									loading="lazy"
+									decoding="async"
+									fetchpriority="low"
+									width="480"
+									height="270"
+								/>
+							</picture>
+						)}
+						<h4 class="title title-clamp">{post.data.title}</h4>
+						<p class="date">
+							<FormattedDate date={post.data.pubDate} />
+						</p>
+						<div class="meta">
+							{post.data.tags.map((tagItem) => (
+								<span>#{tagItem}</span>
+							))}
+						</div>
+					</a>
+				</li>
+			);
+		})}
 	</ul>
 	<style>
 		.tag-filter {
