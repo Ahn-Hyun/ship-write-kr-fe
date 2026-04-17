@@ -4,7 +4,7 @@ import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
-import { getAllTags, getPublishedPosts } from '../../lib/blog';
+import { getAllTags, getCategoryPath, getPublishedPosts } from '../../lib/blog';
 import { buildResponsiveSources } from '../../lib/images';
 
 const posts = await getPublishedPosts();
@@ -143,6 +143,46 @@ const tags = getAllTags(posts);
 				max-width: 720px;
 				color: rgb(var(--gray));
 			}
+			.blog-intro {
+				margin-bottom: 2.5em;
+			}
+			.blog-intro h1 {
+				margin: 0 0 0.3em 0;
+				font-size: 2.2em;
+			}
+			.blog-intro p {
+				color: rgb(var(--gray));
+				font-size: 1.1em;
+				margin-bottom: 1.5em;
+			}
+			.category-nav {
+				display: flex;
+				gap: 1em;
+				margin-bottom: 2em;
+			}
+			.category-btn {
+				display: inline-flex;
+				align-items: center;
+				padding: 0.8em 1.5em;
+				border-radius: 12px;
+				background: rgba(var(--surface), 1);
+				border: 1px solid rgba(var(--border), 0.9);
+				color: rgb(var(--black));
+				text-decoration: none;
+				font-weight: 600;
+				transition: 0.2s ease;
+			}
+			.category-btn:hover {
+				border-color: rgba(37, 99, 235, 0.3);
+				box-shadow: var(--box-shadow);
+				transform: translateY(-1px);
+			}
+			.empty-state {
+				padding: 3em 0;
+				text-align: center;
+				color: rgb(var(--gray));
+				font-style: italic;
+			}
 			@media (max-width: 720px) {
 				.post-grid {
 					gap: 1em;
@@ -153,96 +193,112 @@ const tags = getAllTags(posts);
 	<body>
 		<Header />
 		<main>
-			<section>
-				<div class="tag-filter">
-					<ul
-						class="tag-list"
-						id="tag-list"
-						data-tag-list
-						data-tag-max="13"
-						data-collapsed="true"
-					>
-						<li>
-							<a class="tag-link active" href="/blog">전체 보기</a>
-						</li>
-						{tags.map((tag) => (
-							<li data-tag-item>
-								<a class="tag-link" href={`/tags/${encodeURIComponent(tag)}`}>#{tag}</a>
-							</li>
-						))}
-					</ul>
-					<button
-						class="tag-toggle"
-						type="button"
-						data-tag-toggle
-						aria-controls="tag-list"
-						aria-expanded="false"
-						aria-label="태그 펼치기"
-					>
-						<span class="tag-toggle-icon" aria-hidden="true">
-							<svg
-								viewBox="0 0 20 20"
-								width="16"
-								height="16"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.8"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="4,7 10,13 16,7" />
-							</svg>
-						</span>
-					</button>
+			<section class="blog-intro">
+				<h1>전체글</h1>
+				<p>주식과 부동산 시장의 최신 인사이트를 만나보세요.</p>
+				<div class="category-nav">
+					<a href={getCategoryPath('주식')} class="category-btn">📈 주식</a>
+					<a href={getCategoryPath('부동산')} class="category-btn">🏢 부동산</a>
 				</div>
 			</section>
-			<section>
-				<ul class="post-grid">
-					{
-						posts.map((post) => {
-							const heroSources = post.data.heroImage
-								? buildResponsiveSources(post.data.heroImage.src, [360, 720])
-								: null;
-							return (
-								<li>
-									<a href={`/blog/${post.id}/`}>
-										{post.data.heroImage && (
-											<picture>
-												{heroSources?.webpSrcset && (
-													<source
-														type="image/webp"
-														srcset={heroSources.webpSrcset}
-														sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 360px"
-													/>
-												)}
-												<img
-													src={post.data.heroImage.src}
-													srcset={heroSources?.jpgSrcset || undefined}
-													sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 360px"
-													alt={post.data.heroImage.alt ?? ''}
-													loading="lazy"
-													decoding="async"
-													fetchpriority="low"
-													width="480"
-													height="270"
-												/>
-											</picture>
-										)}
-										<h4 class="title title-clamp">{post.data.title}</h4>
-										<p class="date">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-										<div class="meta">
-											{post.data.tags.map((tagItem) => (
-												<span>#{tagItem}</span>
-											))}
-										</div>
-									</a>
+			{tags.length > 0 && (
+				<section>
+					<div class="tag-filter">
+						<ul
+							class="tag-list"
+							id="tag-list"
+							data-tag-list
+							data-tag-max="13"
+							data-collapsed="true"
+						>
+							<li>
+								<a class="tag-link active" href="/blog">전체 보기</a>
+							</li>
+							{tags.map((tag) => (
+								<li data-tag-item>
+									<a class="tag-link" href={`/tags/${encodeURIComponent(tag)}`}>#{tag}</a>
 								</li>
-							);
-						})
-					}
-				</ul>
+							))}
+						</ul>
+						<button
+							class="tag-toggle"
+							type="button"
+							data-tag-toggle
+							aria-controls="tag-list"
+							aria-expanded="false"
+							aria-label="태그 펼치기"
+						>
+							<span class="tag-toggle-icon" aria-hidden="true">
+								<svg
+									viewBox="0 0 20 20"
+									width="16"
+									height="16"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<polyline points="4,7 10,13 16,7" />
+								</svg>
+							</span>
+						</button>
+					</div>
+				</section>
+			)}
+			<section>
+				{posts.length > 0 ? (
+					<ul class="post-grid">
+						{
+							posts.map((post) => {
+								const heroSources = post.data.heroImage
+									? buildResponsiveSources(post.data.heroImage.src, [360, 720])
+									: null;
+								return (
+									<li>
+										<a href={`/blog/${post.id}/`}>
+											{post.data.heroImage && (
+												<picture>
+													{heroSources?.webpSrcset && (
+														<source
+															type="image/webp"
+															srcset={heroSources.webpSrcset}
+															sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 360px"
+														/>
+													)}
+													<img
+														src={post.data.heroImage.src}
+														srcset={heroSources?.jpgSrcset || undefined}
+														sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 360px"
+														alt={post.data.heroImage.alt ?? ''}
+														loading="lazy"
+														decoding="async"
+														fetchpriority="low"
+														width="480"
+														height="270"
+													/>
+												</picture>
+											)}
+											<h4 class="title title-clamp">{post.data.title}</h4>
+											<p class="date">
+												<FormattedDate date={post.data.pubDate} />
+											</p>
+											<div class="meta">
+												{post.data.tags.map((tagItem) => (
+													<span>#{tagItem}</span>
+												))}
+											</div>
+										</a>
+									</li>
+								);
+							})
+						}
+					</ul>
+				) : (
+					<div class="empty-state">
+						<p>아직 등록된 글이 없습니다.</p>
+					</div>
+				)}
 			</section>
 		</main>
 		<Footer />

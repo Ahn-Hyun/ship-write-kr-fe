@@ -1,5 +1,6 @@
 ---
 import { SITE_TITLE } from '../consts';
+import { getCategoryPath } from '../lib/blog';
 
 const today = new Date();
 ---
@@ -12,9 +13,10 @@ const today = new Date();
 	<p class="footer-meta">&copy; {today.getFullYear()} {SITE_TITLE}. 모든 권리 보유.</p>
 	<nav class="footer-links">
 		<a href="/">홈</a>
-		<a href="/blog">블로그</a>
+		<a href="/blog">전체글</a>
+		<a href={getCategoryPath('주식')}>주식</a>
+		<a href={getCategoryPath('부동산')}>부동산</a>
 		<a href="/about">소개</a>
-		<a href="/contact">문의</a>
 		<a href="/privacy">개인정보 처리방침</a>
 		<a href="/terms">이용약관</a>
 	</nav>

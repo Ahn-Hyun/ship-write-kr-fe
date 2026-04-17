@@ -3,7 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getPublishedPosts } from '../lib/blog';
+import { getCategoryPath, getPublishedPosts } from '../lib/blog';
 
 const posts = await getPublishedPosts();
 const latestPosts = posts.slice(0, 6);
@@ -17,23 +17,57 @@ const latestPosts = posts.slice(0, 6);
 			main {
 				max-width: 720px;
 			}
-			.intro {
-				margin-bottom: 3.5em;
+			.hero {
+				margin-bottom: 4em;
 			}
-			.intro h1 {
-				margin-bottom: 0.4em;
+			.hero h1 {
+				margin-bottom: 0.3em;
+				font-size: 2.5em;
+				line-height: 1.2;
+				letter-spacing: -0.02em;
 			}
-			.intro p {
+			.hero-desc {
 				color: rgb(var(--gray));
-				font-size: 1.05em;
+				font-size: 1.1em;
 				line-height: 1.6;
-				max-width: 600px;
+				margin-bottom: 2em;
+			}
+			.primary-categories {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1.5em;
+			}
+			.category-card {
+				display: block;
+				padding: 1.5em;
+				border-radius: 16px;
+				border: 1px solid rgba(var(--border), 0.9);
+				background: rgba(var(--surface), 1);
+				text-decoration: none;
+				color: inherit;
+				transition: 0.2s ease;
+			}
+			.category-card:hover {
+				border-color: rgba(37, 99, 235, 0.3);
+				box-shadow: var(--box-shadow);
+				transform: translateY(-2px);
+			}
+			.category-card h3 {
+				margin: 0 0 0.4em 0;
+				font-size: 1.3em;
+				color: rgb(var(--black));
+			}
+			.category-card p {
+				margin: 0;
+				color: rgb(var(--gray));
+				font-size: 0.95em;
+				line-height: 1.4;
 			}
 			.section-title {
 				font-size: 1.5em;
-				font-style: italic;
-				margin-bottom: 1.8em;
-				color: rgb(var(--gray-dark));
+				font-weight: 700;
+				margin-bottom: 1.2em;
+				color: rgb(var(--black));
 			}
 			.posts-list {
 				list-style: none;
@@ -69,15 +103,28 @@ const latestPosts = posts.slice(0, 6);
 			.view-all {
 				margin-top: 1.5em;
 			}
+			.empty-state {
+				padding: 3em 0;
+				text-align: center;
+				color: rgb(var(--gray));
+				font-style: italic;
+			}
 			@media (max-width: 720px) {
 				main {
 					max-width: 100%;
 				}
-				.intro {
-					margin-bottom: 2em;
+				.hero {
+					margin-bottom: 3em;
+				}
+				.hero h1 {
+					font-size: 2em;
+				}
+				.primary-categories {
+					grid-template-columns: 1fr;
+					gap: 1em;
 				}
 				.section-title {
-					margin-bottom: 1.2em;
+					margin-bottom: 1em;
 				}
 				.posts-list {
 					margin: 0 0 1.5em 0;
@@ -91,27 +138,47 @@ const latestPosts = posts.slice(0, 6);
 	<body>
 		<Header />
 		<main>
-			<section class="intro">
-				<p>매일 업데이트되는 글로벌 뉴스, 트렌드, 이슈를 큐레이션합니다.</p>
+			<section class="hero">
+				<h1>투자의 나침반,<br/>주식과 부동산 인사이트</h1>
+				<p class="hero-desc">한국 시장의 핵심 트렌드를 깊이 있게 분석합니다.</p>
+				<div class="primary-categories">
+					<a href={getCategoryPath('주식')} class="category-card">
+						<h3>📈 주식</h3>
+						<p>국내 증시 트렌드와 기업 분석</p>
+					</a>
+					<a href={getCategoryPath('부동산')} class="category-card">
+						<h3>🏢 부동산</h3>
+						<p>부동산 시장 동향과 정책 분석</p>
+					</a>
+				</div>
 			</section>
 
 			<section>
-				<ul class="posts-list">
-					{latestPosts.slice(0, 3).map((post) => (
-						<li class="post-item">
-							<a href={`/blog/${post.id}/`}>
-								<h3 class="post-title title-clamp">{post.data.title}</h3>
-							</a>
-							<div class="post-date">
-								{post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-							</div>
-							<p class="post-description">{post.data.description}</p>
-						</li>
-					))}
-				</ul>
-				<div class="view-all">
-					<a class="button primary" href="/blog">Show all</a>
-				</div>
+				<h2 class="section-title">최신 글</h2>
+				{latestPosts.length > 0 ? (
+					<>
+						<ul class="posts-list">
+							{latestPosts.slice(0, 3).map((post) => (
+								<li class="post-item">
+									<a href={`/blog/${post.id}/`}>
+										<h3 class="post-title title-clamp">{post.data.title}</h3>
+									</a>
+									<div class="post-date">
+										{post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+									</div>
+									<p class="post-description">{post.data.description}</p>
+								</li>
+							))}
+						</ul>
+						<div class="view-all">
+							<a class="button primary" href="/blog">전체글 보기</a>
+						</div>
+					</>
+				) : (
+					<div class="empty-state">
+						<p>아직 등록된 글이 없습니다.</p>
+					</div>
+				)}
 			</section>
 		</main>
 		<Footer />

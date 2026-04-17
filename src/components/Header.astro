@@ -1,5 +1,6 @@
 ---
 import { SITE_TITLE } from '../consts';
+import { getCategoryPath } from '../lib/blog';
 import HeaderLink from './HeaderLink.astro';
 ---
 
@@ -13,9 +14,10 @@ import HeaderLink from './HeaderLink.astro';
 		</h2>
 		<div class="internal-links">
 			<HeaderLink href="/">홈</HeaderLink>
-			<HeaderLink href="/blog">블로그</HeaderLink>
+			<HeaderLink href="/blog">전체글</HeaderLink>
+			<HeaderLink href={getCategoryPath('주식')}>주식</HeaderLink>
+			<HeaderLink href={getCategoryPath('부동산')}>부동산</HeaderLink>
 			<HeaderLink href="/about">소개</HeaderLink>
-			<HeaderLink href="/contact">문의</HeaderLink>
 		</div>
 	</nav>
 </header>

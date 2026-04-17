@@ -4,10 +4,11 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import { getCategoryPath } from '../lib/blog';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage, seo } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, seo, category, tags } = Astro.props;
 const siteBase = Astro.site ? new URL(Astro.site).toString() : '';
 const canonicalUrl = seo?.canonical ? new URL(seo.canonical, Astro.site).toString() : undefined;
 const canonical = canonicalUrl && siteBase && canonicalUrl.startsWith(siteBase) ? canonicalUrl : undefined;
@@ -70,6 +71,27 @@ const canonical = canonicalUrl && siteBase && canonicalUrl.startsWith(siteBase) 
 			.last-updated-on {
 				font-style: italic;
 			}
+			.meta-tags {
+				display: flex;
+				gap: 0.8em;
+				flex-wrap: wrap;
+				margin-top: 1em;
+				margin-bottom: 0.5em;
+			}
+			.meta-tags a {
+				text-decoration: none;
+				font-size: 0.9em;
+			}
+			.meta-category {
+				color: var(--accent);
+				font-weight: 600;
+			}
+			.meta-tag {
+				color: rgb(var(--gray));
+			}
+			.meta-tags a:hover {
+				text-decoration: underline;
+			}
 		</style>
 	</head>
 
@@ -95,6 +117,14 @@ const canonical = canonicalUrl && siteBase && canonicalUrl.startsWith(siteBase) 
 							}
 						</div>
 						<h1>{title}</h1>
+						<div class="meta-tags">
+							{category && category.map((cat) => (
+								<a href={getCategoryPath(cat)} class="meta-category">{cat}</a>
+							))}
+							{tags && tags.map((tag) => (
+								<a href={`/tags/${encodeURIComponent(tag)}`} class="meta-tag">#{tag}</a>
+							))}
+						</div>
 						<hr />
 					</div>
 					<slot />
