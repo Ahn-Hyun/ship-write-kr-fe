@@ -1,11 +1,9 @@
 ---
 import PageLayout from '../../layouts/Page.astro';
-import { getPublishedPosts, getPostsByCategory } from '../../lib/blog';
+import { PRIMARY_CATEGORIES, getPublishedPosts, getPostsByCategory } from '../../lib/blog';
 
 export async function getStaticPaths() {
-	const posts = await getPublishedPosts();
-	const categories = new Set(posts.flatMap((post) => post.data.category ?? []));
-	return [...categories].map((category) => ({
+	return PRIMARY_CATEGORIES.map((category) => ({
 		params: { category: encodeURIComponent(category) },
 		props: { category },
 	}));
@@ -18,11 +16,24 @@ const filtered = getPostsByCategory(posts, category);
 
 <PageLayout title={`카테고리: ${category}`} description={`${category} 카테고리의 글`}>
 	<h1>카테고리: {category}</h1>
-	<ul>
-		{filtered.map((post) => (
-			<li>
-				<a class="title-clamp" href={`/blog/${post.id}/`}>{post.data.title}</a>
-			</li>
-		))}
-	</ul>
+	{filtered.length > 0 ? (
+		<ul>
+			{filtered.map((post) => (
+				<li>
+					<a class="title-clamp" href={`/blog/${post.id}/`}>{post.data.title}</a>
+				</li>
+			))}
+		</ul>
+	) : (
+		<div class="empty-state">
+			<p>아직 등록된 글이 없습니다.</p>
+		</div>
+	)}
+	<style>
+		.empty-state {
+			padding: 2em 0;
+			color: rgb(var(--gray));
+			font-style: italic;
+		}
+	</style>
 </PageLayout>

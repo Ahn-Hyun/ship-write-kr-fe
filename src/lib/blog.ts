@@ -3,6 +3,11 @@ import { getCollection } from 'astro:content';
 
 type BlogPost = CollectionEntry<'blog'>;
 
+export const PRIMARY_CATEGORIES = ['주식', '부동산'] as const;
+
+export const getCategoryPath = (category: (typeof PRIMARY_CATEGORIES)[number] | string) =>
+	`/category/${encodeURIComponent(category)}`;
+
 export const getPublishedPosts = async (): Promise<BlogPost[]> => {
 	const posts = await getCollection('blog', ({ data }) => !data.draft);
 	return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
