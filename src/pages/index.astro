@@ -3,10 +3,11 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { getCategoryPath, getPublishedPosts } from '../lib/blog';
+import { getCategoryPath, getPublishedPosts, getPostsByCategory } from '../lib/blog';
 
 const posts = await getPublishedPosts();
-const latestPosts = posts.slice(0, 6);
+const stockPosts = getPostsByCategory(posts, '주식').slice(0, 3);
+const realEstatePosts = getPostsByCategory(posts, '부동산').slice(0, 3);
 ---
 
 <!doctype html>
@@ -32,47 +33,36 @@ const latestPosts = posts.slice(0, 6);
 				line-height: 1.6;
 				margin-bottom: 2em;
 			}
-			.primary-categories {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-				gap: 1.5em;
+			.category-section {
+				margin-bottom: 4em;
 			}
-			.category-card {
-				display: block;
-				padding: 1.5em;
-				border-radius: 16px;
-				border: 1px solid rgba(var(--border), 0.9);
-				background: rgba(var(--surface), 1);
-				text-decoration: none;
-				color: inherit;
-				transition: 0.2s ease;
-			}
-			.category-card:hover {
-				border-color: rgba(37, 99, 235, 0.3);
-				box-shadow: var(--box-shadow);
-				transform: translateY(-2px);
-			}
-			.category-card h3 {
-				margin: 0 0 0.4em 0;
-				font-size: 1.3em;
-				color: rgb(var(--black));
-			}
-			.category-card p {
-				margin: 0;
-				color: rgb(var(--gray));
-				font-size: 0.95em;
-				line-height: 1.4;
+			.section-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				margin-bottom: 1.5em;
+				border-bottom: 2px solid rgba(var(--border), 0.5);
+				padding-bottom: 0.5em;
 			}
 			.section-title {
 				font-size: 1.5em;
 				font-weight: 700;
-				margin-bottom: 1.2em;
+				margin: 0;
 				color: rgb(var(--black));
+			}
+			.view-more {
+				color: var(--accent);
+				text-decoration: none;
+				font-size: 0.95em;
+				font-weight: 600;
+			}
+			.view-more:hover {
+				text-decoration: underline;
 			}
 			.posts-list {
 				list-style: none;
 				padding: 0;
-				margin: 0 0 2.5em 0;
+				margin: 0;
 			}
 			.post-item {
 				margin-bottom: 2.5em;
@@ -100,14 +90,13 @@ const latestPosts = posts.slice(0, 6);
 				line-height: 1.5;
 				margin: 0;
 			}
-			.view-all {
-				margin-top: 1.5em;
-			}
 			.empty-state {
-				padding: 3em 0;
+				padding: 2em 0;
 				text-align: center;
 				color: rgb(var(--gray));
 				font-style: italic;
+				background: rgba(var(--surface), 0.5);
+				border-radius: 8px;
 			}
 			@media (max-width: 720px) {
 				main {
@@ -119,15 +108,8 @@ const latestPosts = posts.slice(0, 6);
 				.hero h1 {
 					font-size: 2em;
 				}
-				.primary-categories {
-					grid-template-columns: 1fr;
-					gap: 1em;
-				}
-				.section-title {
-					margin-bottom: 1em;
-				}
-				.posts-list {
-					margin: 0 0 1.5em 0;
+				.category-section {
+					margin-bottom: 3em;
 				}
 				.post-item {
 					margin-bottom: 1.6em;
@@ -141,39 +123,53 @@ const latestPosts = posts.slice(0, 6);
 			<section class="hero">
 				<h1>투자의 나침반,<br/>주식과 부동산 인사이트</h1>
 				<p class="hero-desc">한국 시장의 핵심 트렌드를 깊이 있게 분석합니다.</p>
-				<div class="primary-categories">
-					<a href={getCategoryPath('주식')} class="category-card">
-						<h3>📈 주식</h3>
-						<p>국내 증시 트렌드와 기업 분석</p>
-					</a>
-					<a href={getCategoryPath('부동산')} class="category-card">
-						<h3>🏢 부동산</h3>
-						<p>부동산 시장 동향과 정책 분석</p>
-					</a>
-				</div>
 			</section>
 
-			<section>
-				<h2 class="section-title">최신 글</h2>
-				{latestPosts.length > 0 ? (
-					<>
-						<ul class="posts-list">
-							{latestPosts.slice(0, 3).map((post) => (
-								<li class="post-item">
-									<a href={`/blog/${post.id}/`}>
-										<h3 class="post-title title-clamp">{post.data.title}</h3>
-									</a>
-									<div class="post-date">
-										{post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
-									</div>
-									<p class="post-description">{post.data.description}</p>
-								</li>
-							))}
-						</ul>
-						<div class="view-all">
-							<a class="button primary" href="/blog">전체글 보기</a>
-						</div>
-					</>
+			<section class="category-section">
+				<div class="section-header">
+					<h2 class="section-title">📈 주식</h2>
+					<a href={getCategoryPath('주식')} class="view-more">더보기 &rarr;</a>
+				</div>
+				{stockPosts.length > 0 ? (
+					<ul class="posts-list">
+						{stockPosts.map((post) => (
+							<li class="post-item">
+								<a href={`/blog/${post.id}/`}>
+									<h3 class="post-title title-clamp">{post.data.title}</h3>
+								</a>
+								<div class="post-date">
+									{post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+								</div>
+								<p class="post-description">{post.data.description}</p>
+							</li>
+						))}
+					</ul>
+				) : (
+					<div class="empty-state">
+						<p>아직 등록된 글이 없습니다.</p>
+					</div>
+				)}
+			</section>
+
+			<section class="category-section">
+				<div class="section-header">
+					<h2 class="section-title">🏢 부동산</h2>
+					<a href={getCategoryPath('부동산')} class="view-more">더보기 &rarr;</a>
+				</div>
+				{realEstatePosts.length > 0 ? (
+					<ul class="posts-list">
+						{realEstatePosts.map((post) => (
+							<li class="post-item">
+								<a href={`/blog/${post.id}/`}>
+									<h3 class="post-title title-clamp">{post.data.title}</h3>
+								</a>
+								<div class="post-date">
+									{post.data.pubDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+								</div>
+								<p class="post-description">{post.data.description}</p>
+							</li>
+						))}
+					</ul>
 				) : (
 					<div class="empty-state">
 						<p>아직 등록된 글이 없습니다.</p>

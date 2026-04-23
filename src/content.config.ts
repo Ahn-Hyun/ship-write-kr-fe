@@ -12,7 +12,9 @@ const blog = defineCollection({
 				description: z.string(),
 				pubDate: z.coerce.date(),
 				updatedDate: z.coerce.date().optional(),
-				category: z.array(z.enum(PRIMARY_CATEGORIES)).min(1).max(2),
+				category: z.array(z.enum(PRIMARY_CATEGORIES)).length(1),
+				author: z.string().default('AI 에디토리얼 팀'),
+				references: z.array(z.string().url()).default([]),
 				tags: z.array(z.string()).default([]),
 				draft: z.boolean().optional().default(false),
 			heroImage: z
